@@ -4,14 +4,14 @@ subtitle: "For AOM 2024 Submission"
 author: "Meng Ye"
 date: "3/18/2024"
 output:
-  word_document: default
-  pdf_document: default
   html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ## Notes for editting 1/4/2024
 1. I only kept the model we chose to use for ARNOVA 2023
-2. The data used in the analysis is the version MERGING in provider sheet data. We curated the data by adding 
+2. The data used in the analysis is the version MERGING in provider sheet data. We keep 2 levels for both government and CICs.
 3. Re-ran descriptive statistics to better suit the need for the AOM draft
 
 ## Notes for updates 10/17/2023
@@ -43,12 +43,13 @@ library(scales) # label percent
 library(lubridate) # working with dates
 library(marginaleffects) #to calculate marginal effects
 library(gt) # to format tables
+library(here) # work with directory
 ```
 
 Import the cleaned data 
 
 ```{r message=FALSE, warning=FALSE}
-merged <- read_csv("D:/Archive/Socialcare UK/data/spinout_2017.csv")
+merged <- read_rds(here("data", "spinout_2017.rds"))
 ```
 
 
@@ -68,7 +69,7 @@ merged_cleaned <- merged %>%
   mutate(rating = ordered(rating, levels = c("Inadequate","Req improv", "Good", "Outstanding")),
          form_spinout = case_when(form == "GOV" ~ "GOV",
                            form == "CIC" & spin_out == "TRUE" ~ "SP_CIC",
-                           form == "CIC" & spin_out == "FALSE" ~ "NSP_CIC"),
+                           form == "CIC" & spin_out == "FALSE" ~ "CIC"),
          socialcare = ifelse(type == "Social Care Org", TRUE, FALSE)) %>% 
   
   # creating a new dummy variable for facility category
@@ -102,13 +103,12 @@ merged_cleaned <- merged %>%
                                 rating == "Req improv" ~ 2,
                                 rating == "Good" ~ 3,
                                 rating == "Outstanding" ~ 4)) 
-# show first several rows of the data set derived 
 nrow(merged_cleaned)
 ```
 
 ```{r}
 merged_cleaned %>% 
-  mutate(overall = ifelse(domain == "overall", 1, 0)) %>% 
+  mutate(overall = ifelse(domain == "Overall", 1, 0)) %>% 
   group_by(form_spinout) %>% 
   summarize(count_provider = n_distinct(provider_name),
             count_location = n_distinct(location_name),
@@ -117,7 +117,7 @@ merged_cleaned %>%
   gt()
 ```
 
-**Note** The cound of unique location name does not include provider level data lines. 
+**Note** The count of unique location name does not include provider level data lines. 
 
 
 
