@@ -41,7 +41,7 @@ library(gt) # to format tables
 Import the cleaned data 
 
 ```{r message=FALSE, warning=FALSE}
-merged <- read_csv("D:/Archive/Socialcare UK/data/spinout_2017.csv")
+merged <- read_csv(here("data", "spinout_2017.csv"))
 ```
 
 
@@ -111,31 +111,6 @@ merged_cleaned %>%
 ```
 
 **Note** The count of unique location name does not include provider level data lines. 
-
-
-
-```{r}
-cic_list_location_only <- merged_cleaned %>% 
-  filter(form != "GOV" & level == "provider") %>% 
-  select(provider_name, location_name, level, form_spinout, service_type) 
-```
-
-```{r}
-cic_list_provider_2level_repeat <- merged_cleaned %>% 
-  filter(form != "GOV") %>% 
-  select(provider_name, level, form_spinout, service_type) %>% 
-  group_by(provider_name, level) %>% 
-  slice_head(n = 1)
-```
-
-
-```{r}
-write_csv(cic_list_location_only, file = "cic_list_location_only.csv")
-```
-
-```{r}
-write_csv(cic_list_provider_2level_repeat, file = "cic_list_provider_2level_repeat.csv")
-```
 
 
 
