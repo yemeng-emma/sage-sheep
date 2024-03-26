@@ -1,0 +1,183 @@
+---
+title: "Spin-out Data Analysis (full data with new grouping) 2 levels 2017 data"
+subtitle: "For AOM 2024 Submission"
+author: "Meng Ye"
+date: "3/18/2024"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+## Notes for editting 1/4/2024
+1. I only kept the model we chose to use for ARNOVA 2023
+2. The data used in the analysis is the version MERGING in provider sheet data. We curated the data by adding 
+3. Re-ran descriptive statistics to better suit the need for the AOM draft
+
+## Notes for updates 10/17/2023
+1. I have checked the false positive CIC "Community Integrated Care (CIC) - 2 Seafarers Walk" found in the 2019 dataset. It is NOT in the 2017 dataset
+2. Added data cleaning for dropping overlapping provider rating 
+3. Drop certain rating categories as discussed
+
+
+## Setting up the R session and Loading packages
+
+```{r contr}
+# environment setup to run ordered logit properly
+options(contrasts = rep("contr.treatment", 2))
+```
+
+
+This chunk loads all the packages to use
+
+```{r load package, message=FALSE, warning=FALSE}
+#packages for ordered logit
+library(ordinal) # package for ordinal logit regression
+library(brant) # brant test for the parallel assumption for ordered logit
+library(MASS) # models that work with the brant test
+library(tidyverse) # package for data cleaning and plotting
+library(readxl) # package for reading excel file
+library(broom) # extracting model summary as data frame
+library(modelsummary) # deriving model tables
+library(scales) # label percent
+library(lubridate) # working with dates
+library(marginaleffects) #to calculate marginal effects
+library(gt) # to format tables
+```
+
+Import the cleaned data 
+
+```{r message=FALSE, warning=FALSE}
+merged <- read_csv("D:/Archive/Socialcare UK/data/spinout_2017.csv")
+```
+
+
+## Prepare the data for ordinal regression
+
+```{r data cleaning}
+#select relevant columns, rename and relabel 
+merged_cleaned <- merged %>% 
+  # recode legal form types to be more readable / easier to present
+  mutate(# inherited = ifelse(inherited == "Y", TRUE, FALSE),
+         rating = recode(rating, 
+                         "Insufficient evidence to rate" = "NA",
+                         "Requires improvement" = "Req improv"),
+         date = ymd(publication_date)) %>% 
+  
+  # assign order in the rating levels
+  mutate(rating = ordered(rating, levels = c("Inadequate","Req improv", "Good", "Outstanding")),
+         form_spinout = case_when(form == "GOV" ~ "GOV",
+                           form == "CIC" & spin_out == "TRUE" ~ "SP_CIC",
+                           form == "CIC" & spin_out == "FALSE" ~ "NSP_CIC"),
+         socialcare = ifelse(type == "Social Care Org", TRUE, FALSE)) %>% 
+  
+  # creating a new dummy variable for facility category
+  mutate(year = year(date),
+         year2 = year-2013,
+         Year = factor(year)) %>%
+  
+  # regroup care type
+
+  mutate(service_type = case_when(
+      str_detect(primary_cat, "Acute hospital") ~ "Acute hospital",
+      str_detect(primary_cat, "Mental health") ~ "Mental health",
+      TRUE ~ primary_cat  # Keep the original value if none of the conditions match
+    )) %>%
+  
+  # drop unmatched service types
+  filter(!service_type %in% c("Acute hospital", "Ambulance service", "Dentists", 
+                              "Independent consulting doctors", "Prison Healthcare")) %>% 
+  
+  # drop overlapping provider data 
+  # (correcting the issues with counting twice when both provider and service location are available)
+  group_by(provider_name) %>% 
+  mutate(overlap = ifelse(
+    n() > 1 & level == "provider" & report_type == "Provider", "drop", "keep"
+  )) %>%
+  ungroup()  %>% 
+  filter(overlap != "drop") %>% 
+  
+  # converting the ordinal variable to numerical 
+  mutate(rating_num = case_when(rating == "Inadequate" ~ 1,
+                                rating == "Req improv" ~ 2,
+                                rating == "Good" ~ 3,
+                                rating == "Outstanding" ~ 4)) 
+# show first several rows of the data set derived 
+nrow(merged_cleaned)
+```
+
+```{r}
+merged_cleaned %>% 
+  mutate(overall = ifelse(domain == "overall", 1, 0)) %>% 
+  group_by(form_spinout) %>% 
+  summarize(count_provider = n_distinct(provider_name),
+            count_location = n_distinct(location_name),
+            count_overall_rating = sum(overall),
+            count_rating = n()) %>% 
+  gt()
+```
+
+**Note** The cound of unique location name does not include provider level data lines. 
+
+
+
+## Overall distribution of key variables - two groups
+
+```{r}
+datasummary(form_spinout + socialcare  + region + Year ~ 1, data = merged_cleaned, fmt = 0)
+```
+
+
+## Overall distribution of key variables - three groups 
+
+
+```{r}
+datasummary(1 + rating + service_type + region ~ form_spinout, data = merged_cleaned, fmt = 0)
+```
+
+## whole models with continous year trend 
+
+Since service_type is inclusive of variation/information from `socialcare` and `level`, we drop this variable from the model 
+
+```{r }
+model_order_overall <- clm(rating ~ form_spinout  + service_type + region + year2,
+                data = filter(merged_cleaned, domain == "Overall"),
+                link = "logit")
+
+model_order_safe <- clm(rating ~ form_spinout  + service_type+ region + year2,
+                data = filter(merged_cleaned, domain == "Safe"),
+                link = "logit")
+model_order_effective <- clm(rating ~ form_spinout  + service_type + region + year2,
+                data = filter(merged_cleaned, domain == "Effective"),
+                link = "logit")
+model_order_caring <- clm(rating ~ form_spinout  + service_type + region + year2,
+                data = filter(merged_cleaned, domain == "Caring"),
+                link = "logit")
+model_order_well_led <- clm(rating ~ form_spinout + service_type + region + year2,
+                data = filter(merged_cleaned, domain == "Well-led"),
+                link = "logit")
+model_order_responsive <- clm(rating ~ form_spinout + service_type + region + year2,
+                data = filter(merged_cleaned, domain == "Responsive"),
+                link = "logit")
+```
+
+
+
+```{r}
+ordinal_models_exp <-
+  modelsummary(
+    list(
+      "overall" = model_order_overall,
+      "safe" = model_order_safe,
+      "effective" = model_order_effective,
+      "caring" = model_order_caring,
+      "well-led" = model_order_well_led,
+      "responsive" = model_order_responsive
+    ),
+    coef_omit = "region",
+    exponentiate = T,
+    statistic = "({p.value}) {stars}")
+ordinal_models_exp
+```
+
+

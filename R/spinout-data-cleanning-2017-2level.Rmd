@@ -1,0 +1,225 @@
+---
+title: "Spin-out Data Cleanning - 2017 location"
+author: "Meng Ye"
+date: "10/10/2023"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+## Introduction 
+
+The current version include the data cleaning for location level CQC data from December 2017. 
+
+## Some patch work to do 
+
+1. Find and delete the one false positive CIC Dr. Hall found 
+2. Decide about "comparable" inspection category. I think public mental health providers and private mental health providers are comparable. Now only private (CIC) providers are comparable. How adding the provider level data change the landscape? Need to check. 
+
+
+### Load packages 
+
+```{r load package, message=FALSE, warning=FALSE}
+library(tidyverse) # package for data cleaning and plotting
+library(readxl)
+library(modelsummary)
+set.seed(5432)
+```
+
+
+## 0. Spin-out list data
+
+```{r message=FALSE, warning=FALSE}
+# import CIC spin out coding
+spinout <- read_csv("D:/Archive/Socialcare UK/data/spinout_list_2017.csv")
+```
+
+
+## 1. Data at the location level 
+
+
+```{r import data 0, message=FALSE, warning=FALSE}
+# import location level full data
+locations<- read_excel("D:/Archive/Socialcare UK/data/2017_rating.xlsx", sheet = 2)
+```
+
+
+
+### Clean and filter out Gov and CIC providers
+
+```{r rename and filter, message=FALSE, warning=FALSE}
+### Rename the columns 
+
+locations_renamed <- locations %>% 
+  rename(primary_cat = `Location Primary Inspection Category`,
+         type = `Location Type`,
+         region = `Location Region`,
+         domain = `Key Question`, # named to "Domain" later
+         rating = `Latest Rating`,
+ #        inherited = `Inherited Rating (Y/N)`, # no such a column in 2017 data
+         provider_name = `Provider Name`,
+         publication_date = `Publication Date`) 
+```
+
+
+
+### Standardize the provider name
+
+```{r sample std}
+locations_std <- locations_renamed %>% 
+# remove dots
+  mutate(std_name = str_replace_all(provider_name, "\\.", "")) %>% 
+# capitalize all
+  mutate(std_name = str_to_upper(std_name)) %>%
+# standardize to LTD
+  mutate(std_name = str_replace_all(std_name, "LIMITED", "LTD")) %>% 
+# standardize to CIC
+  mutate(std_name = str_replace_all(std_name, "COMMUNITY INTEREST COMPANY", "CIC"))
+```
+
+
+### filtering out CIC and GOV providers
+
+```{r}
+## building the string detect conditions
+keep_terms <- c("CIC", "NHS ", "FOUNDATION TRUST", "COUNCIL", " CC ", " MDC ", " DC ", " BC ", "BOROUGH")
+keep_filter <- paste0("\\b(", paste(keep_terms, collapse = "|"), ")\\b")
+```
+
+```{r}
+## filtering out CICs and GOVs
+locations_coded <- locations_std %>% 
+  filter(str_detect(std_name, keep_filter)) %>% 
+  filter(!str_detect(std_name, "BOROUGH GREEN\\s|BOROUGH ROAD\\s")) %>% 
+  ## add the form and level columns
+  mutate(form = ifelse(str_detect(std_name, "CIC"), "CIC", "GOV"),
+         level = "location") %>% 
+  left_join(spinout, by = "provider_name") %>% 
+  mutate(spin_out = ifelse(is.na(spin_out), FALSE, TRUE))
+nrow(locations_coded)
+```
+
+
+```{r}
+#check the spin-out coding distribution 
+
+table(locations_coded$form, locations_coded$spin_out)
+
+```
+
+
+
+```{r}
+## re-arrange columns 
+
+locations_to_merge <- locations_coded %>% 
+  mutate(project_id = paste0("location", row_number())) %>% 
+  select(project_id, provider_name, location_name = `Location Name`, type, primary_cat, form, region,
+         domain, rating, publication_date, report_type = `Report Type`, std_name, level, spin_out)
+
+```
+
+
+## 2. Data at the provider level 
+
+
+```{r import data 0, message=FALSE, warning=FALSE}
+# sampled data manually coded (with unfriendly column names)
+providers <- read_excel("D:/Archive/Socialcare UK/data/2017_rating.xlsx", sheet = 3)
+```
+
+
+```{r import data, message=FALSE, warning=FALSE}
+### Rename the columns 
+
+providers_renamed <- providers %>% 
+  rename(primary_cat = `Provider Primary Inspection Category`,
+         type = `Provider Type`,
+         region = `Provider Region`,
+         domain = `Key Question`, # named to "Domain" later 
+         rating = `Latest Rating`,
+         provider_name = `Provider Name`,
+         publication_date = `Publication Date`) 
+```
+
+
+
+### Standardize the provider name
+
+```{r sample std}
+providers_std <- providers_renamed %>% 
+# remove dots
+  mutate(std_name = str_replace_all(provider_name, "\\.", "")) %>% 
+# capitalize all
+  mutate(std_name = str_to_upper(std_name)) %>%
+# standardize to LTD
+  mutate(std_name = str_replace_all(std_name, "LIMITED", "LTD")) %>% 
+# standardize to CIC
+  mutate(std_name = str_replace_all(std_name, "COMMUNITY INTEREST COMPANY", "CIC"))
+```
+
+
+### filtering out CIC and GOV providers
+
+```{r}
+## building the string detect conditions
+#keep_terms <- c("CIC", "NHS ", "FOUNDATION TRUST", "COUNCIL", " CC ", " MDC ", " DC ", " BC ", "BOROUGH")
+#keep_filter <- paste0("\\b(", paste(keep_terms, collapse = "|"), ")\\b")
+```
+
+```{r}
+## filtering out CICs and GOVs
+providers_coded <- providers_std %>% 
+  filter(str_detect(std_name, keep_filter)) %>% 
+  filter(!str_detect(std_name, "BOROUGH GREEN\\s|BOROUGH ROAD\\s")) %>% 
+  ## add the form and level columns
+  mutate(form = ifelse(str_detect(std_name, "CIC"), "CIC", "GOV"),
+         level = "provider") %>% 
+  left_join(spinout, by = "provider_name") %>% 
+  mutate(spin_out = ifelse(is.na(spin_out), FALSE, TRUE),
+         location_name = NA)
+nrow(providers_coded)
+```
+
+```{r}
+## re-arrange columns 
+
+providers_to_merge <- providers_coded %>% 
+  mutate(project_id = paste0("provider", row_number())) %>% 
+  select(project_id, provider_name, location_name, type, primary_cat, form, region,
+         domain, rating, publication_date, report_type = `Report Type`, std_name, level, spin_out)
+
+```
+
+
+
+
+## 3. Merge the two level data 
+
+```{r}
+combined_2levels <- bind_rows(locations_to_merge, providers_to_merge)
+```
+
+
+## 4. Drop overlapping provider level data
+
+  # drop the overlapping provider data
+combined <- combined_2levels
+  group_by(provider_name) %>% 
+  mutate(overlap = ifelse(
+    n() > 1 & level == "provider" & report_type == "Provider", "drop", "keep"
+  )) %>%
+  ungroup()
+
+
+
+
+
+```{r}
+write_csv(combined_2levels, "D:/Archive/Socialcare UK/data/spinout_2017.csv")
+```
+
+
+
+
