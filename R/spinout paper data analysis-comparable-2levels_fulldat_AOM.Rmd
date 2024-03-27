@@ -69,7 +69,8 @@ merged_cleaned <- merged %>%
   mutate(rating = ordered(rating, levels = c("Inadequate","Req improv", "Good", "Outstanding")),
          form_spinout = case_when(form == "GOV" ~ "GOV",
                            form == "CIC" & spin_out == "TRUE" ~ "SP_CIC",
-                           form == "CIC" & spin_out == "FALSE" ~ "CIC"),
+                           form == "CIC" & spin_out == "FALSE" ~ "Ind_CIC"),
+         form_spinout = fct_relevel(form_spinout, "GOV"),
          socialcare = ifelse(type == "Social Care Org", TRUE, FALSE)) %>% 
   
   # creating a new dummy variable for facility category

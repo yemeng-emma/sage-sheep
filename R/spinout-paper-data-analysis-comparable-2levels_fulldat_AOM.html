@@ -414,7 +414,8 @@ merged_cleaned &lt;- merged %&gt;%
   mutate(rating = ordered(rating, levels = c(&quot;Inadequate&quot;,&quot;Req improv&quot;, &quot;Good&quot;, &quot;Outstanding&quot;)),
          form_spinout = case_when(form == &quot;GOV&quot; ~ &quot;GOV&quot;,
                            form == &quot;CIC&quot; &amp; spin_out == &quot;TRUE&quot; ~ &quot;SP_CIC&quot;,
-                           form == &quot;CIC&quot; &amp; spin_out == &quot;FALSE&quot; ~ &quot;CIC&quot;),
+                           form == &quot;CIC&quot; &amp; spin_out == &quot;FALSE&quot; ~ &quot;Ind_CIC&quot;),
+         form_spinout = fct_relevel(form_spinout, &quot;GOV&quot;),
          socialcare = ifelse(type == &quot;Social Care Org&quot;, TRUE, FALSE)) %&gt;% 
   
   # creating a new dummy variable for facility category
@@ -458,20 +459,20 @@ nrow(merged_cleaned)</code></pre>
             count_overall_rating = sum(overall),
             count_rating = n()) %&gt;% 
   gt()</code></pre>
-<div id="euvffqlgsn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#euvffqlgsn table {
+<div id="ojheufdkgc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ojheufdkgc table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#euvffqlgsn thead, #euvffqlgsn tbody, #euvffqlgsn tfoot, #euvffqlgsn tr, #euvffqlgsn td, #euvffqlgsn th {
+#ojheufdkgc thead, #ojheufdkgc tbody, #ojheufdkgc tfoot, #ojheufdkgc tr, #ojheufdkgc td, #ojheufdkgc th {
 border-style: none;
 }
-#euvffqlgsn p {
+#ojheufdkgc p {
 margin: 0;
 padding: 0;
 }
-#euvffqlgsn .gt_table {
+#ojheufdkgc .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -496,11 +497,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#euvffqlgsn .gt_caption {
+#ojheufdkgc .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#euvffqlgsn .gt_title {
+#ojheufdkgc .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -511,7 +512,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#euvffqlgsn .gt_subtitle {
+#ojheufdkgc .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -522,7 +523,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#euvffqlgsn .gt_heading {
+#ojheufdkgc .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -533,12 +534,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#euvffqlgsn .gt_bottom_border {
+#ojheufdkgc .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#euvffqlgsn .gt_col_headings {
+#ojheufdkgc .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -552,7 +553,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#euvffqlgsn .gt_col_heading {
+#ojheufdkgc .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -571,7 +572,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#euvffqlgsn .gt_column_spanner_outer {
+#ojheufdkgc .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -582,13 +583,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#euvffqlgsn .gt_column_spanner_outer:first-child {
+#ojheufdkgc .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#euvffqlgsn .gt_column_spanner_outer:last-child {
+#ojheufdkgc .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#euvffqlgsn .gt_column_spanner {
+#ojheufdkgc .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -599,10 +600,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#euvffqlgsn .gt_spanner_row {
+#ojheufdkgc .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#euvffqlgsn .gt_group_heading {
+#ojheufdkgc .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -627,7 +628,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#euvffqlgsn .gt_empty_group_heading {
+#ojheufdkgc .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -641,13 +642,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#euvffqlgsn .gt_from_md > :first-child {
+#ojheufdkgc .gt_from_md > :first-child {
 margin-top: 0;
 }
-#euvffqlgsn .gt_from_md > :last-child {
+#ojheufdkgc .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#euvffqlgsn .gt_row {
+#ojheufdkgc .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -665,7 +666,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#euvffqlgsn .gt_stub {
+#ojheufdkgc .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -677,7 +678,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#euvffqlgsn .gt_stub_row_group {
+#ojheufdkgc .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -690,13 +691,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#euvffqlgsn .gt_row_group_first td {
+#ojheufdkgc .gt_row_group_first td {
 border-top-width: 2px;
 }
-#euvffqlgsn .gt_row_group_first th {
+#ojheufdkgc .gt_row_group_first th {
 border-top-width: 2px;
 }
-#euvffqlgsn .gt_summary_row {
+#ojheufdkgc .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -705,14 +706,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#euvffqlgsn .gt_first_summary_row {
+#ojheufdkgc .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#euvffqlgsn .gt_first_summary_row.thick {
+#ojheufdkgc .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#euvffqlgsn .gt_last_summary_row {
+#ojheufdkgc .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -721,7 +722,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#euvffqlgsn .gt_grand_summary_row {
+#ojheufdkgc .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -730,7 +731,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#euvffqlgsn .gt_first_grand_summary_row {
+#ojheufdkgc .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -739,7 +740,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#euvffqlgsn .gt_last_grand_summary_row_top {
+#ojheufdkgc .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -748,10 +749,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#euvffqlgsn .gt_striped {
+#ojheufdkgc .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#euvffqlgsn .gt_table_body {
+#ojheufdkgc .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -759,7 +760,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#euvffqlgsn .gt_footnotes {
+#ojheufdkgc .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -772,7 +773,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#euvffqlgsn .gt_footnote {
+#ojheufdkgc .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -780,7 +781,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#euvffqlgsn .gt_sourcenotes {
+#ojheufdkgc .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -793,57 +794,57 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#euvffqlgsn .gt_sourcenote {
+#ojheufdkgc .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#euvffqlgsn .gt_left {
+#ojheufdkgc .gt_left {
 text-align: left;
 }
-#euvffqlgsn .gt_center {
+#ojheufdkgc .gt_center {
 text-align: center;
 }
-#euvffqlgsn .gt_right {
+#ojheufdkgc .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#euvffqlgsn .gt_font_normal {
+#ojheufdkgc .gt_font_normal {
 font-weight: normal;
 }
-#euvffqlgsn .gt_font_bold {
+#ojheufdkgc .gt_font_bold {
 font-weight: bold;
 }
-#euvffqlgsn .gt_font_italic {
+#ojheufdkgc .gt_font_italic {
 font-style: italic;
 }
-#euvffqlgsn .gt_super {
+#ojheufdkgc .gt_super {
 font-size: 65%;
 }
-#euvffqlgsn .gt_footnote_marks {
+#ojheufdkgc .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#euvffqlgsn .gt_asterisk {
+#ojheufdkgc .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#euvffqlgsn .gt_indent_1 {
+#ojheufdkgc .gt_indent_1 {
 text-indent: 5px;
 }
-#euvffqlgsn .gt_indent_2 {
+#ojheufdkgc .gt_indent_2 {
 text-indent: 10px;
 }
-#euvffqlgsn .gt_indent_3 {
+#ojheufdkgc .gt_indent_3 {
 text-indent: 15px;
 }
-#euvffqlgsn .gt_indent_4 {
+#ojheufdkgc .gt_indent_4 {
 text-indent: 20px;
 }
-#euvffqlgsn .gt_indent_5 {
+#ojheufdkgc .gt_indent_5 {
 text-indent: 25px;
 }
 </style>
@@ -851,7 +852,7 @@ text-indent: 25px;
   <thead>
     
     <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="form_spinout">form_spinout</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="form_spinout">form_spinout</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="count_provider">count_provider</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="count_location">count_location</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="count_overall_rating">count_overall_rating</th>
@@ -859,17 +860,17 @@ text-indent: 25px;
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td headers="form_spinout" class="gt_row gt_left">CIC</td>
-<td headers="count_provider" class="gt_row gt_right">62</td>
-<td headers="count_location" class="gt_row gt_right">94</td>
-<td headers="count_overall_rating" class="gt_row gt_right">247</td>
-<td headers="count_rating" class="gt_row gt_right">777</td></tr>
-    <tr><td headers="form_spinout" class="gt_row gt_left">GOV</td>
+    <tr><td headers="form_spinout" class="gt_row gt_center">GOV</td>
 <td headers="count_provider" class="gt_row gt_right">218</td>
 <td headers="count_location" class="gt_row gt_right">808</td>
 <td headers="count_overall_rating" class="gt_row gt_right">1719</td>
 <td headers="count_rating" class="gt_row gt_right">9785</td></tr>
-    <tr><td headers="form_spinout" class="gt_row gt_left">SP_CIC</td>
+    <tr><td headers="form_spinout" class="gt_row gt_center">Ind_CIC</td>
+<td headers="count_provider" class="gt_row gt_right">62</td>
+<td headers="count_location" class="gt_row gt_right">94</td>
+<td headers="count_overall_rating" class="gt_row gt_right">247</td>
+<td headers="count_rating" class="gt_row gt_right">777</td></tr>
+    <tr><td headers="form_spinout" class="gt_row gt_center">SP_CIC</td>
 <td headers="count_provider" class="gt_row gt_right">21</td>
 <td headers="count_location" class="gt_row gt_right">52</td>
 <td headers="count_overall_rating" class="gt_row gt_right">233</td>
@@ -885,20 +886,20 @@ include provider level data lines.</p>
 <div id="overall-distribution-of-key-variables---two-groups" class="section level2">
 <h2>Overall distribution of key variables - two groups</h2>
 <pre class="r"><code>datasummary(form_spinout + socialcare  + region + Year ~ 1, data = merged_cleaned, fmt = 0)</code></pre>
-<div id="xoivjkifft" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xoivjkifft table {
+<div id="qeqcicucpi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qeqcicucpi table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#xoivjkifft thead, #xoivjkifft tbody, #xoivjkifft tfoot, #xoivjkifft tr, #xoivjkifft td, #xoivjkifft th {
+#qeqcicucpi thead, #qeqcicucpi tbody, #qeqcicucpi tfoot, #qeqcicucpi tr, #qeqcicucpi td, #qeqcicucpi th {
 border-style: none;
 }
-#xoivjkifft p {
+#qeqcicucpi p {
 margin: 0;
 padding: 0;
 }
-#xoivjkifft .gt_table {
+#qeqcicucpi .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -923,11 +924,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#xoivjkifft .gt_caption {
+#qeqcicucpi .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#xoivjkifft .gt_title {
+#qeqcicucpi .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -938,7 +939,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#xoivjkifft .gt_subtitle {
+#qeqcicucpi .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -949,7 +950,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#xoivjkifft .gt_heading {
+#qeqcicucpi .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -960,12 +961,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xoivjkifft .gt_bottom_border {
+#qeqcicucpi .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xoivjkifft .gt_col_headings {
+#qeqcicucpi .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -979,7 +980,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xoivjkifft .gt_col_heading {
+#qeqcicucpi .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -998,7 +999,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#xoivjkifft .gt_column_spanner_outer {
+#qeqcicucpi .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1009,13 +1010,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#xoivjkifft .gt_column_spanner_outer:first-child {
+#qeqcicucpi .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#xoivjkifft .gt_column_spanner_outer:last-child {
+#qeqcicucpi .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#xoivjkifft .gt_column_spanner {
+#qeqcicucpi .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -1026,10 +1027,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#xoivjkifft .gt_spanner_row {
+#qeqcicucpi .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#xoivjkifft .gt_group_heading {
+#qeqcicucpi .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1054,7 +1055,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#xoivjkifft .gt_empty_group_heading {
+#qeqcicucpi .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1068,13 +1069,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#xoivjkifft .gt_from_md > :first-child {
+#qeqcicucpi .gt_from_md > :first-child {
 margin-top: 0;
 }
-#xoivjkifft .gt_from_md > :last-child {
+#qeqcicucpi .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#xoivjkifft .gt_row {
+#qeqcicucpi .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1092,7 +1093,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#xoivjkifft .gt_stub {
+#qeqcicucpi .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1104,7 +1105,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xoivjkifft .gt_stub_row_group {
+#qeqcicucpi .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1117,13 +1118,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#xoivjkifft .gt_row_group_first td {
+#qeqcicucpi .gt_row_group_first td {
 border-top-width: 2px;
 }
-#xoivjkifft .gt_row_group_first th {
+#qeqcicucpi .gt_row_group_first th {
 border-top-width: 2px;
 }
-#xoivjkifft .gt_summary_row {
+#qeqcicucpi .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1132,14 +1133,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xoivjkifft .gt_first_summary_row {
+#qeqcicucpi .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#xoivjkifft .gt_first_summary_row.thick {
+#qeqcicucpi .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#xoivjkifft .gt_last_summary_row {
+#qeqcicucpi .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1148,7 +1149,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xoivjkifft .gt_grand_summary_row {
+#qeqcicucpi .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1157,7 +1158,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xoivjkifft .gt_first_grand_summary_row {
+#qeqcicucpi .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1166,7 +1167,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#xoivjkifft .gt_last_grand_summary_row_top {
+#qeqcicucpi .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1175,10 +1176,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#xoivjkifft .gt_striped {
+#qeqcicucpi .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#xoivjkifft .gt_table_body {
+#qeqcicucpi .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1186,7 +1187,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xoivjkifft .gt_footnotes {
+#qeqcicucpi .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1199,7 +1200,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xoivjkifft .gt_footnote {
+#qeqcicucpi .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -1207,7 +1208,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xoivjkifft .gt_sourcenotes {
+#qeqcicucpi .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1220,57 +1221,57 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xoivjkifft .gt_sourcenote {
+#qeqcicucpi .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xoivjkifft .gt_left {
+#qeqcicucpi .gt_left {
 text-align: left;
 }
-#xoivjkifft .gt_center {
+#qeqcicucpi .gt_center {
 text-align: center;
 }
-#xoivjkifft .gt_right {
+#qeqcicucpi .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#xoivjkifft .gt_font_normal {
+#qeqcicucpi .gt_font_normal {
 font-weight: normal;
 }
-#xoivjkifft .gt_font_bold {
+#qeqcicucpi .gt_font_bold {
 font-weight: bold;
 }
-#xoivjkifft .gt_font_italic {
+#qeqcicucpi .gt_font_italic {
 font-style: italic;
 }
-#xoivjkifft .gt_super {
+#qeqcicucpi .gt_super {
 font-size: 65%;
 }
-#xoivjkifft .gt_footnote_marks {
+#qeqcicucpi .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#xoivjkifft .gt_asterisk {
+#qeqcicucpi .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#xoivjkifft .gt_indent_1 {
+#qeqcicucpi .gt_indent_1 {
 text-indent: 5px;
 }
-#xoivjkifft .gt_indent_2 {
+#qeqcicucpi .gt_indent_2 {
 text-indent: 10px;
 }
-#xoivjkifft .gt_indent_3 {
+#qeqcicucpi .gt_indent_3 {
 text-indent: 15px;
 }
-#xoivjkifft .gt_indent_4 {
+#qeqcicucpi .gt_indent_4 {
 text-indent: 20px;
 }
-#xoivjkifft .gt_indent_5 {
+#qeqcicucpi .gt_indent_5 {
 text-indent: 25px;
 }
 </style>
@@ -1285,11 +1286,11 @@ text-indent: 25px;
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers class="gt_row gt_left">form_spinout</td>
-<td headers class="gt_row gt_left">CIC</td>
-<td headers="All" class="gt_row gt_right">777</td></tr>
-    <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">GOV</td>
 <td headers="All" class="gt_row gt_right">9785</td></tr>
+    <tr><td headers class="gt_row gt_left"></td>
+<td headers class="gt_row gt_left">Ind_CIC</td>
+<td headers="All" class="gt_row gt_right">777</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">SP_CIC</td>
 <td headers="All" class="gt_row gt_right">748</td></tr>
@@ -1350,20 +1351,20 @@ text-indent: 25px;
 <div id="overall-distribution-of-key-variables---three-groups" class="section level2">
 <h2>Overall distribution of key variables - three groups</h2>
 <pre class="r"><code>datasummary(1 + rating + service_type + region ~ form_spinout, data = merged_cleaned, fmt = 0)</code></pre>
-<div id="vpdzfrnatp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vpdzfrnatp table {
+<div id="jyaqtpklcb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jyaqtpklcb table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#vpdzfrnatp thead, #vpdzfrnatp tbody, #vpdzfrnatp tfoot, #vpdzfrnatp tr, #vpdzfrnatp td, #vpdzfrnatp th {
+#jyaqtpklcb thead, #jyaqtpklcb tbody, #jyaqtpklcb tfoot, #jyaqtpklcb tr, #jyaqtpklcb td, #jyaqtpklcb th {
 border-style: none;
 }
-#vpdzfrnatp p {
+#jyaqtpklcb p {
 margin: 0;
 padding: 0;
 }
-#vpdzfrnatp .gt_table {
+#jyaqtpklcb .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -1388,11 +1389,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_caption {
+#jyaqtpklcb .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#vpdzfrnatp .gt_title {
+#jyaqtpklcb .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -1403,7 +1404,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#vpdzfrnatp .gt_subtitle {
+#jyaqtpklcb .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1414,7 +1415,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#vpdzfrnatp .gt_heading {
+#jyaqtpklcb .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1425,12 +1426,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_bottom_border {
+#jyaqtpklcb .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_col_headings {
+#jyaqtpklcb .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1444,7 +1445,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_col_heading {
+#jyaqtpklcb .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1463,7 +1464,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#vpdzfrnatp .gt_column_spanner_outer {
+#jyaqtpklcb .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1474,13 +1475,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#vpdzfrnatp .gt_column_spanner_outer:first-child {
+#jyaqtpklcb .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#vpdzfrnatp .gt_column_spanner_outer:last-child {
+#jyaqtpklcb .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#vpdzfrnatp .gt_column_spanner {
+#jyaqtpklcb .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -1491,10 +1492,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#vpdzfrnatp .gt_spanner_row {
+#jyaqtpklcb .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#vpdzfrnatp .gt_group_heading {
+#jyaqtpklcb .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1519,7 +1520,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#vpdzfrnatp .gt_empty_group_heading {
+#jyaqtpklcb .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1533,13 +1534,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#vpdzfrnatp .gt_from_md > :first-child {
+#jyaqtpklcb .gt_from_md > :first-child {
 margin-top: 0;
 }
-#vpdzfrnatp .gt_from_md > :last-child {
+#jyaqtpklcb .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#vpdzfrnatp .gt_row {
+#jyaqtpklcb .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1557,7 +1558,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#vpdzfrnatp .gt_stub {
+#jyaqtpklcb .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1569,7 +1570,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#vpdzfrnatp .gt_stub_row_group {
+#jyaqtpklcb .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1582,13 +1583,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#vpdzfrnatp .gt_row_group_first td {
+#jyaqtpklcb .gt_row_group_first td {
 border-top-width: 2px;
 }
-#vpdzfrnatp .gt_row_group_first th {
+#jyaqtpklcb .gt_row_group_first th {
 border-top-width: 2px;
 }
-#vpdzfrnatp .gt_summary_row {
+#jyaqtpklcb .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1597,14 +1598,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#vpdzfrnatp .gt_first_summary_row {
+#jyaqtpklcb .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_first_summary_row.thick {
+#jyaqtpklcb .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#vpdzfrnatp .gt_last_summary_row {
+#jyaqtpklcb .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1613,7 +1614,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_grand_summary_row {
+#jyaqtpklcb .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1622,7 +1623,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#vpdzfrnatp .gt_first_grand_summary_row {
+#jyaqtpklcb .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1631,7 +1632,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_last_grand_summary_row_top {
+#jyaqtpklcb .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1640,10 +1641,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_striped {
+#jyaqtpklcb .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#vpdzfrnatp .gt_table_body {
+#jyaqtpklcb .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1651,7 +1652,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_footnotes {
+#jyaqtpklcb .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1664,7 +1665,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_footnote {
+#jyaqtpklcb .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -1672,7 +1673,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#vpdzfrnatp .gt_sourcenotes {
+#jyaqtpklcb .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1685,57 +1686,57 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#vpdzfrnatp .gt_sourcenote {
+#jyaqtpklcb .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#vpdzfrnatp .gt_left {
+#jyaqtpklcb .gt_left {
 text-align: left;
 }
-#vpdzfrnatp .gt_center {
+#jyaqtpklcb .gt_center {
 text-align: center;
 }
-#vpdzfrnatp .gt_right {
+#jyaqtpklcb .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#vpdzfrnatp .gt_font_normal {
+#jyaqtpklcb .gt_font_normal {
 font-weight: normal;
 }
-#vpdzfrnatp .gt_font_bold {
+#jyaqtpklcb .gt_font_bold {
 font-weight: bold;
 }
-#vpdzfrnatp .gt_font_italic {
+#jyaqtpklcb .gt_font_italic {
 font-style: italic;
 }
-#vpdzfrnatp .gt_super {
+#jyaqtpklcb .gt_super {
 font-size: 65%;
 }
-#vpdzfrnatp .gt_footnote_marks {
+#jyaqtpklcb .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#vpdzfrnatp .gt_asterisk {
+#jyaqtpklcb .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#vpdzfrnatp .gt_indent_1 {
+#jyaqtpklcb .gt_indent_1 {
 text-indent: 5px;
 }
-#vpdzfrnatp .gt_indent_2 {
+#jyaqtpklcb .gt_indent_2 {
 text-indent: 10px;
 }
-#vpdzfrnatp .gt_indent_3 {
+#jyaqtpklcb .gt_indent_3 {
 text-indent: 15px;
 }
-#vpdzfrnatp .gt_indent_4 {
+#jyaqtpklcb .gt_indent_4 {
 text-indent: 20px;
 }
-#vpdzfrnatp .gt_indent_5 {
+#jyaqtpklcb .gt_indent_5 {
 text-indent: 25px;
 }
 </style>
@@ -1745,121 +1746,121 @@ text-indent: 25px;
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=" "> </th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="  ">  </th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="CIC">CIC</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="GOV">GOV</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Ind_CIC">Ind_CIC</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="SP_CIC">SP_CIC</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">All</td>
-<td headers="CIC" class="gt_row gt_right">777</td>
 <td headers="GOV" class="gt_row gt_right">9785</td>
+<td headers="Ind_CIC" class="gt_row gt_right">777</td>
 <td headers="SP_CIC" class="gt_row gt_right">748</td></tr>
     <tr><td headers class="gt_row gt_left">rating</td>
 <td headers class="gt_row gt_left">Inadequate</td>
-<td headers="CIC" class="gt_row gt_right">1</td>
 <td headers="GOV" class="gt_row gt_right">80</td>
+<td headers="Ind_CIC" class="gt_row gt_right">1</td>
 <td headers="SP_CIC" class="gt_row gt_right">11</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Req improv</td>
-<td headers="CIC" class="gt_row gt_right">98</td>
 <td headers="GOV" class="gt_row gt_right">1441</td>
+<td headers="Ind_CIC" class="gt_row gt_right">98</td>
 <td headers="SP_CIC" class="gt_row gt_right">74</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Good</td>
-<td headers="CIC" class="gt_row gt_right">607</td>
 <td headers="GOV" class="gt_row gt_right">7932</td>
+<td headers="Ind_CIC" class="gt_row gt_right">607</td>
 <td headers="SP_CIC" class="gt_row gt_right">627</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Outstanding</td>
-<td headers="CIC" class="gt_row gt_right">71</td>
 <td headers="GOV" class="gt_row gt_right">332</td>
+<td headers="Ind_CIC" class="gt_row gt_right">71</td>
 <td headers="SP_CIC" class="gt_row gt_right">36</td></tr>
     <tr><td headers class="gt_row gt_left">service_type</td>
 <td headers class="gt_row gt_left">Community based adult social care services</td>
-<td headers="CIC" class="gt_row gt_right">252</td>
 <td headers="GOV" class="gt_row gt_right">1944</td>
+<td headers="Ind_CIC" class="gt_row gt_right">252</td>
 <td headers="SP_CIC" class="gt_row gt_right">102</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Community health - NHS &amp; Independent</td>
-<td headers="CIC" class="gt_row gt_right">96</td>
 <td headers="GOV" class="gt_row gt_right">846</td>
+<td headers="Ind_CIC" class="gt_row gt_right">96</td>
 <td headers="SP_CIC" class="gt_row gt_right">168</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">GP Practices</td>
-<td headers="CIC" class="gt_row gt_right">285</td>
 <td headers="GOV" class="gt_row gt_right">203</td>
+<td headers="Ind_CIC" class="gt_row gt_right">285</td>
 <td headers="SP_CIC" class="gt_row gt_right">262</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Hospice services</td>
-<td headers="CIC" class="gt_row gt_right">6</td>
 <td headers="GOV" class="gt_row gt_right">6</td>
+<td headers="Ind_CIC" class="gt_row gt_right">6</td>
 <td headers="SP_CIC" class="gt_row gt_right">6</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Mental health</td>
-<td headers="CIC" class="gt_row gt_right">24</td>
 <td headers="GOV" class="gt_row gt_right">3930</td>
+<td headers="Ind_CIC" class="gt_row gt_right">24</td>
 <td headers="SP_CIC" class="gt_row gt_right">120</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Out of hours</td>
-<td headers="CIC" class="gt_row gt_right">6</td>
 <td headers="GOV" class="gt_row gt_right">6</td>
+<td headers="Ind_CIC" class="gt_row gt_right">6</td>
 <td headers="SP_CIC" class="gt_row gt_right">0</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Residential social care</td>
-<td headers="CIC" class="gt_row gt_right">102</td>
 <td headers="GOV" class="gt_row gt_right">2832</td>
+<td headers="Ind_CIC" class="gt_row gt_right">102</td>
 <td headers="SP_CIC" class="gt_row gt_right">84</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Urgent care services &amp; mobile doctors</td>
-<td headers="CIC" class="gt_row gt_right">6</td>
 <td headers="GOV" class="gt_row gt_right">18</td>
+<td headers="Ind_CIC" class="gt_row gt_right">6</td>
 <td headers="SP_CIC" class="gt_row gt_right">6</td></tr>
     <tr><td headers class="gt_row gt_left">region</td>
 <td headers class="gt_row gt_left">East Midlands</td>
-<td headers="CIC" class="gt_row gt_right">54</td>
 <td headers="GOV" class="gt_row gt_right">1056</td>
+<td headers="Ind_CIC" class="gt_row gt_right">54</td>
 <td headers="SP_CIC" class="gt_row gt_right">10</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">East of England</td>
-<td headers="CIC" class="gt_row gt_right">60</td>
 <td headers="GOV" class="gt_row gt_right">732</td>
+<td headers="Ind_CIC" class="gt_row gt_right">60</td>
 <td headers="SP_CIC" class="gt_row gt_right">234</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">London</td>
-<td headers="CIC" class="gt_row gt_right">108</td>
 <td headers="GOV" class="gt_row gt_right">1152</td>
+<td headers="Ind_CIC" class="gt_row gt_right">108</td>
 <td headers="SP_CIC" class="gt_row gt_right">78</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">North East</td>
-<td headers="CIC" class="gt_row gt_right">12</td>
 <td headers="GOV" class="gt_row gt_right">507</td>
+<td headers="Ind_CIC" class="gt_row gt_right">12</td>
 <td headers="SP_CIC" class="gt_row gt_right">0</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">North West</td>
-<td headers="CIC" class="gt_row gt_right">231</td>
 <td headers="GOV" class="gt_row gt_right">1556</td>
+<td headers="Ind_CIC" class="gt_row gt_right">231</td>
 <td headers="SP_CIC" class="gt_row gt_right">36</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">South East</td>
-<td headers="CIC" class="gt_row gt_right">102</td>
 <td headers="GOV" class="gt_row gt_right">1649</td>
+<td headers="Ind_CIC" class="gt_row gt_right">102</td>
 <td headers="SP_CIC" class="gt_row gt_right">6</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">South West</td>
-<td headers="CIC" class="gt_row gt_right">78</td>
 <td headers="GOV" class="gt_row gt_right">796</td>
+<td headers="Ind_CIC" class="gt_row gt_right">78</td>
 <td headers="SP_CIC" class="gt_row gt_right">198</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">West Midlands</td>
-<td headers="CIC" class="gt_row gt_right">84</td>
 <td headers="GOV" class="gt_row gt_right">1086</td>
+<td headers="Ind_CIC" class="gt_row gt_right">84</td>
 <td headers="SP_CIC" class="gt_row gt_right">6</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers class="gt_row gt_left">Yorkshire and The Humber</td>
-<td headers="CIC" class="gt_row gt_right">48</td>
 <td headers="GOV" class="gt_row gt_right">1251</td>
+<td headers="Ind_CIC" class="gt_row gt_right">48</td>
 <td headers="SP_CIC" class="gt_row gt_right">180</td></tr>
   </tbody>
   
@@ -1905,20 +1906,20 @@ model_order_responsive &lt;- clm(rating ~ form_spinout + service_type + region +
     exponentiate = T,
     statistic = &quot;({p.value}) {stars}&quot;)
 ordinal_models_exp</code></pre>
-<div id="pjsztgnwct" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pjsztgnwct table {
+<div id="aobiuruehq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aobiuruehq table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#pjsztgnwct thead, #pjsztgnwct tbody, #pjsztgnwct tfoot, #pjsztgnwct tr, #pjsztgnwct td, #pjsztgnwct th {
+#aobiuruehq thead, #aobiuruehq tbody, #aobiuruehq tfoot, #aobiuruehq tr, #aobiuruehq td, #aobiuruehq th {
 border-style: none;
 }
-#pjsztgnwct p {
+#aobiuruehq p {
 margin: 0;
 padding: 0;
 }
-#pjsztgnwct .gt_table {
+#aobiuruehq .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -1943,11 +1944,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#pjsztgnwct .gt_caption {
+#aobiuruehq .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#pjsztgnwct .gt_title {
+#aobiuruehq .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -1958,7 +1959,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#pjsztgnwct .gt_subtitle {
+#aobiuruehq .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1969,7 +1970,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#pjsztgnwct .gt_heading {
+#aobiuruehq .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1980,12 +1981,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#pjsztgnwct .gt_bottom_border {
+#aobiuruehq .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#pjsztgnwct .gt_col_headings {
+#aobiuruehq .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1999,7 +2000,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#pjsztgnwct .gt_col_heading {
+#aobiuruehq .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2018,7 +2019,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#pjsztgnwct .gt_column_spanner_outer {
+#aobiuruehq .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2029,13 +2030,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#pjsztgnwct .gt_column_spanner_outer:first-child {
+#aobiuruehq .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#pjsztgnwct .gt_column_spanner_outer:last-child {
+#aobiuruehq .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#pjsztgnwct .gt_column_spanner {
+#aobiuruehq .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2046,10 +2047,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#pjsztgnwct .gt_spanner_row {
+#aobiuruehq .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#pjsztgnwct .gt_group_heading {
+#aobiuruehq .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2074,7 +2075,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#pjsztgnwct .gt_empty_group_heading {
+#aobiuruehq .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2088,13 +2089,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#pjsztgnwct .gt_from_md > :first-child {
+#aobiuruehq .gt_from_md > :first-child {
 margin-top: 0;
 }
-#pjsztgnwct .gt_from_md > :last-child {
+#aobiuruehq .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#pjsztgnwct .gt_row {
+#aobiuruehq .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2112,7 +2113,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#pjsztgnwct .gt_stub {
+#aobiuruehq .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2124,7 +2125,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pjsztgnwct .gt_stub_row_group {
+#aobiuruehq .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2137,13 +2138,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#pjsztgnwct .gt_row_group_first td {
+#aobiuruehq .gt_row_group_first td {
 border-top-width: 2px;
 }
-#pjsztgnwct .gt_row_group_first th {
+#aobiuruehq .gt_row_group_first th {
 border-top-width: 2px;
 }
-#pjsztgnwct .gt_summary_row {
+#aobiuruehq .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2152,14 +2153,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pjsztgnwct .gt_first_summary_row {
+#aobiuruehq .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#pjsztgnwct .gt_first_summary_row.thick {
+#aobiuruehq .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#pjsztgnwct .gt_last_summary_row {
+#aobiuruehq .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2168,7 +2169,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#pjsztgnwct .gt_grand_summary_row {
+#aobiuruehq .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2177,7 +2178,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pjsztgnwct .gt_first_grand_summary_row {
+#aobiuruehq .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2186,7 +2187,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#pjsztgnwct .gt_last_grand_summary_row_top {
+#aobiuruehq .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2195,10 +2196,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#pjsztgnwct .gt_striped {
+#aobiuruehq .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#pjsztgnwct .gt_table_body {
+#aobiuruehq .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2206,7 +2207,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#pjsztgnwct .gt_footnotes {
+#aobiuruehq .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2219,7 +2220,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#pjsztgnwct .gt_footnote {
+#aobiuruehq .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2227,7 +2228,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pjsztgnwct .gt_sourcenotes {
+#aobiuruehq .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2240,57 +2241,57 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#pjsztgnwct .gt_sourcenote {
+#aobiuruehq .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#pjsztgnwct .gt_left {
+#aobiuruehq .gt_left {
 text-align: left;
 }
-#pjsztgnwct .gt_center {
+#aobiuruehq .gt_center {
 text-align: center;
 }
-#pjsztgnwct .gt_right {
+#aobiuruehq .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#pjsztgnwct .gt_font_normal {
+#aobiuruehq .gt_font_normal {
 font-weight: normal;
 }
-#pjsztgnwct .gt_font_bold {
+#aobiuruehq .gt_font_bold {
 font-weight: bold;
 }
-#pjsztgnwct .gt_font_italic {
+#aobiuruehq .gt_font_italic {
 font-style: italic;
 }
-#pjsztgnwct .gt_super {
+#aobiuruehq .gt_super {
 font-size: 65%;
 }
-#pjsztgnwct .gt_footnote_marks {
+#aobiuruehq .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#pjsztgnwct .gt_asterisk {
+#aobiuruehq .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#pjsztgnwct .gt_indent_1 {
+#aobiuruehq .gt_indent_1 {
 text-indent: 5px;
 }
-#pjsztgnwct .gt_indent_2 {
+#aobiuruehq .gt_indent_2 {
 text-indent: 10px;
 }
-#pjsztgnwct .gt_indent_3 {
+#aobiuruehq .gt_indent_3 {
 text-indent: 15px;
 }
-#pjsztgnwct .gt_indent_4 {
+#aobiuruehq .gt_indent_4 {
 text-indent: 20px;
 }
-#pjsztgnwct .gt_indent_5 {
+#aobiuruehq .gt_indent_5 {
 text-indent: 25px;
 }
 </style>
@@ -2310,11 +2311,11 @@ text-indent: 25px;
   <tbody class="gt_table_body">
     <tr><td headers class="gt_row gt_left">Inadequate|Req improv</td>
 <td headers="overall" class="gt_row gt_center">0.001</td>
-<td headers="safe" class="gt_row gt_center">0.001</td>
-<td headers="effective" class="gt_row gt_center">0.001</td>
+<td headers="safe" class="gt_row gt_center">0.002</td>
+<td headers="effective" class="gt_row gt_center">0.002</td>
 <td headers="caring" class="gt_row gt_center"></td>
 <td headers="well-led" class="gt_row gt_center">0.003</td>
-<td headers="responsive" class="gt_row gt_center">0.002</td></tr>
+<td headers="responsive" class="gt_row gt_center">0.003</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers="overall" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="safe" class="gt_row gt_center">(&lt;0.001) ***</td>
@@ -2323,12 +2324,12 @@ text-indent: 25px;
 <td headers="well-led" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="responsive" class="gt_row gt_center">(&lt;0.001) ***</td></tr>
     <tr><td headers class="gt_row gt_left">Req improv|Good</td>
-<td headers="overall" class="gt_row gt_center">0.016</td>
-<td headers="safe" class="gt_row gt_center">0.032</td>
-<td headers="effective" class="gt_row gt_center">0.050</td>
-<td headers="caring" class="gt_row gt_center">0.017</td>
-<td headers="well-led" class="gt_row gt_center">0.057</td>
-<td headers="responsive" class="gt_row gt_center">0.037</td></tr>
+<td headers="overall" class="gt_row gt_center">0.028</td>
+<td headers="safe" class="gt_row gt_center">0.049</td>
+<td headers="effective" class="gt_row gt_center">0.068</td>
+<td headers="caring" class="gt_row gt_center">0.025</td>
+<td headers="well-led" class="gt_row gt_center">0.062</td>
+<td headers="responsive" class="gt_row gt_center">0.071</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers="overall" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="safe" class="gt_row gt_center">(&lt;0.001) ***</td>
@@ -2337,26 +2338,26 @@ text-indent: 25px;
 <td headers="well-led" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="responsive" class="gt_row gt_center">(&lt;0.001) ***</td></tr>
     <tr><td headers class="gt_row gt_left">Good|Outstanding</td>
-<td headers="overall" class="gt_row gt_center">2.023</td>
-<td headers="safe" class="gt_row gt_center">29.640</td>
-<td headers="effective" class="gt_row gt_center">14.576</td>
-<td headers="caring" class="gt_row gt_center">20.618</td>
-<td headers="well-led" class="gt_row gt_center">8.778</td>
-<td headers="responsive" class="gt_row gt_center">7.688</td></tr>
+<td headers="overall" class="gt_row gt_center">3.470</td>
+<td headers="safe" class="gt_row gt_center">45.668</td>
+<td headers="effective" class="gt_row gt_center">19.735</td>
+<td headers="caring" class="gt_row gt_center">29.500</td>
+<td headers="well-led" class="gt_row gt_center">9.498</td>
+<td headers="responsive" class="gt_row gt_center">14.803</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
-<td headers="overall" class="gt_row gt_center">(0.054) +</td>
+<td headers="overall" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="safe" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="effective" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="caring" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="well-led" class="gt_row gt_center">(&lt;0.001) ***</td>
 <td headers="responsive" class="gt_row gt_center">(&lt;0.001) ***</td></tr>
-    <tr><td headers class="gt_row gt_left">form_spinoutGOV</td>
-<td headers="overall" class="gt_row gt_center">0.583</td>
-<td headers="safe" class="gt_row gt_center">0.649</td>
-<td headers="effective" class="gt_row gt_center">0.739</td>
-<td headers="caring" class="gt_row gt_center">0.699</td>
-<td headers="well-led" class="gt_row gt_center">0.924</td>
-<td headers="responsive" class="gt_row gt_center">0.519</td></tr>
+    <tr><td headers class="gt_row gt_left">form_spinoutInd_CIC</td>
+<td headers="overall" class="gt_row gt_center">1.715</td>
+<td headers="safe" class="gt_row gt_center">1.541</td>
+<td headers="effective" class="gt_row gt_center">1.354</td>
+<td headers="caring" class="gt_row gt_center">1.431</td>
+<td headers="well-led" class="gt_row gt_center">1.082</td>
+<td headers="responsive" class="gt_row gt_center">1.925</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
 <td headers="overall" class="gt_row gt_center">(0.010) **</td>
 <td headers="safe" class="gt_row gt_center">(0.146)</td>
@@ -2365,19 +2366,19 @@ text-indent: 25px;
 <td headers="well-led" class="gt_row gt_center">(0.763)</td>
 <td headers="responsive" class="gt_row gt_center">(0.033) *</td></tr>
     <tr><td headers class="gt_row gt_left">form_spinoutSP_CIC</td>
-<td headers="overall" class="gt_row gt_center">0.856</td>
-<td headers="safe" class="gt_row gt_center">1.038</td>
-<td headers="effective" class="gt_row gt_center">0.961</td>
-<td headers="caring" class="gt_row gt_center">0.811</td>
-<td headers="well-led" class="gt_row gt_center">1.889</td>
-<td headers="responsive" class="gt_row gt_center">0.780</td></tr>
+<td headers="overall" class="gt_row gt_center">1.468</td>
+<td headers="safe" class="gt_row gt_center">1.599</td>
+<td headers="effective" class="gt_row gt_center">1.302</td>
+<td headers="caring" class="gt_row gt_center">1.160</td>
+<td headers="well-led" class="gt_row gt_center">2.044</td>
+<td headers="responsive" class="gt_row gt_center">1.502</td></tr>
     <tr><td headers class="gt_row gt_left"></td>
-<td headers="overall" class="gt_row gt_center">(0.520)</td>
-<td headers="safe" class="gt_row gt_center">(0.923)</td>
-<td headers="effective" class="gt_row gt_center">(0.920)</td>
-<td headers="caring" class="gt_row gt_center">(0.676)</td>
-<td headers="well-led" class="gt_row gt_center">(0.078) +</td>
-<td headers="responsive" class="gt_row gt_center">(0.541)</td></tr>
+<td headers="overall" class="gt_row gt_center">(0.071) +</td>
+<td headers="safe" class="gt_row gt_center">(0.105)</td>
+<td headers="effective" class="gt_row gt_center">(0.390)</td>
+<td headers="caring" class="gt_row gt_center">(0.708)</td>
+<td headers="well-led" class="gt_row gt_center">(0.015) *</td>
+<td headers="responsive" class="gt_row gt_center">(0.197)</td></tr>
     <tr><td headers class="gt_row gt_left">service_typeCommunity health - NHS &amp; Independent</td>
 <td headers="overall" class="gt_row gt_center">0.331</td>
 <td headers="safe" class="gt_row gt_center">0.192</td>
