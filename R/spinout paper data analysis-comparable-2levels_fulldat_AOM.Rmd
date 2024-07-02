@@ -1,13 +1,20 @@
 ---
 title: "Spin-out Data Analysis (full data with new grouping) 2 levels 2017 data"
-subtitle: "For AOM 2024 Submission"
+subtitle: "updates to the AOM version"
 author: "Meng Ye"
-date: "3/18/2024"
+date: "7/2/2024"
 output:
   html_document: default
   pdf_document: default
   word_document: default
 ---
+
+## Notes for edits on 7/2/2024
+
+1. Add the model with health/social care categorization rather than the eight service types
+2. add the cross-tab of rating by form and health/social care
+3. add random effects model with 8 service types, random effects model with health/social care won't run
+
 
 ## Notes for editting 1/4/2024
 1. I only kept the model we chose to use for ARNOVA 2023
@@ -71,7 +78,8 @@ merged_cleaned <- merged %>%
                            form == "CIC" & spin_out == "TRUE" ~ "SP_CIC",
                            form == "CIC" & spin_out == "FALSE" ~ "Ind_CIC"),
          form_spinout = fct_relevel(form_spinout, "GOV"),
-         socialcare = ifelse(type == "Social Care Org", TRUE, FALSE)) %>% 
+         social_care = ifelse(type == "Social Care Org", "social care", "healthcare")) %>% 
+  
   
   # creating a new dummy variable for facility category
   mutate(year = year(date),
@@ -98,6 +106,7 @@ merged_cleaned <- merged %>%
   )) %>%
   ungroup()  %>% 
   filter(overlap != "drop") %>% 
+  # 11784 rolws of data down to 11310 rows
   
   # converting the ordinal variable to numerical 
   mutate(rating_num = case_when(rating == "Inadequate" ~ 1,
@@ -122,30 +131,49 @@ merged_cleaned %>%
 
 
 
-## Overall distribution of key variables - two groups
+## Dverall distribution of key variables - overall
 
 ```{r}
-datasummary(form_spinout + socialcare  + region + Year ~ 1, data = merged_cleaned, fmt = 0)
+datasummary(form_spinout + social_care + service_type  + region + Year ~ 1, data = merged_cleaned, fmt = 0)
 ```
 
 
-## Overall distribution of key variables - three groups 
+## Distribution of key variables - three groups 
 
 
 ```{r}
-datasummary(1 + rating + service_type + region ~ form_spinout, data = merged_cleaned, fmt = 0)
+datasummary(1 + rating + social_care + service_type + region ~ form_spinout, data = merged_cleaned, fmt = 0)
 ```
 
-## whole models with continous year trend 
+## Cross-tab of rating data 
+
+```{r}
+datasummary_crosstab(form_spinout * social_care ~ rating, data = merged_cleaned)
+```
+## Calculating meaning rating score 
+
+```{r}
+merged_overall <- merged_cleaned %>% 
+  filter(domain == "Overall")
+datasummary(form_spinout * social_care ~ rating_num * mean, data = merged_overall)
+```
+```{r}
+datasummary(service_type ~ form_spinout * rating_num * mean, data = merged_overall)
+
+```
+
+
+## whole models with continous year trend  - fixed effects
 
 Since service_type is inclusive of variation/information from `socialcare` and `level`, we drop this variable from the model 
+
 
 ```{r }
 model_order_overall <- clm(rating ~ form_spinout  + service_type + region + year2,
                 data = filter(merged_cleaned, domain == "Overall"),
                 link = "logit")
 
-model_order_safe <- clm(rating ~ form_spinout  + service_type+ region + year2,
+model_order_safe <- clm(rating ~ form_spinout  + service_type + region + year2,
                 data = filter(merged_cleaned, domain == "Safe"),
                 link = "logit")
 model_order_effective <- clm(rating ~ form_spinout  + service_type + region + year2,
@@ -176,9 +204,121 @@ ordinal_models_exp <-
       "responsive" = model_order_responsive
     ),
     coef_omit = "region",
-    exponentiate = T,
+    exponentiate = F,
     statistic = "({p.value}) {stars}")
 ordinal_models_exp
+```
+
+## whole models with continous year trend  - random effects (multi-level)
+
+
+```{r }
+model_order_overall_multi <-
+  clmm(
+    rating ~ form_spinout  + (1 | service_type) + (1 | region) + year2,
+    data = filter(merged_cleaned, domain == "Overall"),
+    link = "logit"
+  )
+
+model_order_safe_multi <-
+  clmm(
+    rating ~ form_spinout  + (1 | service_type) + (1 | region) + year2,
+    data = filter(merged_cleaned, domain == "Safe"),
+    link = "logit"
+  )
+model_order_effective_multi <-
+  clmm(
+    rating ~ form_spinout  + (1 | service_type) + (1 | region) + year2,
+    data = filter(merged_cleaned, domain == "Effective"),
+    link = "logit"
+  )
+model_order_caring_multi <-
+  clmm(
+    rating ~ form_spinout  + (1 | service_type) + (1 | region) + year2,
+    data = filter(merged_cleaned, domain == "Caring"),
+    link = "logit"
+  )
+model_order_well_led_multi <-
+  clmm(
+    rating ~ form_spinout + (1 | service_type) + (1 | region) + year2,
+    data = filter(merged_cleaned, domain == "Well-led"),
+    link = "logit"
+  )
+model_order_responsive_multi <-
+  clmm(
+    rating ~ form_spinout + (1 | service_type) + (1 | region) + year2,
+    data = filter(merged_cleaned, domain == "Responsive"),
+    link = "logit"
+  )
+```
+
+
+
+
+```{r}
+ordinal_models_exp_multi <-
+  modelsummary(
+    list(
+      "overall" = model_order_overall_multi,
+      "safe" = model_order_safe_multi,
+      "effective" = model_order_effective_multi,
+      "caring" = model_order_caring_multi,
+      "well-led" = model_order_well_led_multi,
+      "responsive" = model_order_responsive_multi
+    ),
+    coef_omit = "region",
+    exponentiate = F,
+    statistic = "({p.value}) {stars}")
+ordinal_models_exp_multi
+```
+
+## whole models with continous year trend by social/health care
+
+Since service_type is inclusive of variation/information from `socialcare` and `level`, we drop this variable from the model 
+
+
+
+
+
+```{r }
+model_order_overall2 <- clm(rating ~ form_spinout + social_care + region + year2,
+                data = filter(merged_cleaned, domain == "Overall"),
+                link = "logit")
+
+model_order_safe2 <- clm(rating ~ form_spinout  + social_care + region + year2,
+                data = filter(merged_cleaned, domain == "Safe"),
+                link = "logit")
+model_order_effective2 <- clm(rating ~ form_spinout  + social_care + region + year2,
+                data = filter(merged_cleaned, domain == "Effective"),
+                link = "logit")
+model_order_caring2 <- clm(rating ~ form_spinout  + social_care + region + year2,
+                data = filter(merged_cleaned, domain == "Caring"),
+                link = "logit")
+model_order_well_led2 <- clm(rating ~ form_spinout + social_care + region + year2,
+                data = filter(merged_cleaned, domain == "Well-led"),
+                link = "logit")
+model_order_responsive2 <- clm(rating ~ form_spinout + social_care + region + year2,
+                data = filter(merged_cleaned, domain == "Responsive"),
+                link = "logit")
+```
+
+
+
+```{r}
+ordinal_models_exp2 <-
+  modelsummary(
+    list(
+      "overall" = model_order_overall2,
+      "safe" = model_order_safe2,
+      "effective" = model_order_effective2,
+      "caring" = model_order_caring2,
+      "well-led" = model_order_well_led2,
+      "responsive" = model_order_responsive2
+    ),
+    coef_omit = "region",
+    exponentiate = F,
+    statistic = "({p.value}) {stars}")
+ordinal_models_exp2
 ```
 
 

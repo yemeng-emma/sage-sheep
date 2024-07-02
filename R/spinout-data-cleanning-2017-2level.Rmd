@@ -12,11 +12,6 @@ output:
 
 The current version include the data cleaning for location level CQC data from December 2017. 
 
-## Some patch work to do 
-
-1. Find and delete the one false positive CIC Dr. Hall found 
-2. Decide about "comparable" inspection category. I think public mental health providers and private mental health providers are comparable. Now only private (CIC) providers are comparable. How adding the provider level data change the landscape? Need to check. 
-
 
 ### Load packages 
 
@@ -24,6 +19,7 @@ The current version include the data cleaning for location level CQC data from D
 library(tidyverse) # package for data cleaning and plotting
 library(readxl)
 library(modelsummary)
+library(here) # manage directory
 set.seed(5432)
 ```
 
@@ -32,7 +28,7 @@ set.seed(5432)
 
 ```{r message=FALSE, warning=FALSE}
 # import CIC spin out coding
-spinout <- read_csv("D:/Archive/Socialcare UK/data/spinout_list_2017.csv")
+spinout <- read_csv(here("data","spinout_list_2017.csv"))
 ```
 
 
@@ -41,7 +37,7 @@ spinout <- read_csv("D:/Archive/Socialcare UK/data/spinout_list_2017.csv")
 
 ```{r import data 0, message=FALSE, warning=FALSE}
 # import location level full data
-locations<- read_excel("D:/Archive/Socialcare UK/data/2017_rating.xlsx", sheet = 2)
+locations<- read_excel(here("data","2017_rating.xlsx"), sheet = 2)
 ```
 
 
@@ -114,7 +110,7 @@ table(locations_coded$form, locations_coded$spin_out)
 ## re-arrange columns 
 
 locations_to_merge <- locations_coded %>% 
-  mutate(project_id = paste0("location", row_number())) %>% 
+  mutate(project_id = paste0("location", row_number())) |>
   select(project_id, provider_name, location_name = `Location Name`, type, primary_cat, form, region,
          domain, rating, publication_date, report_type = `Report Type`, std_name, level, spin_out)
 
@@ -126,7 +122,7 @@ locations_to_merge <- locations_coded %>%
 
 ```{r import data 0, message=FALSE, warning=FALSE}
 # sampled data manually coded (with unfriendly column names)
-providers <- read_excel("D:/Archive/Socialcare UK/data/2017_rating.xlsx", sheet = 3)
+providers <- read_excel(here("data","2017_rating.xlsx"), sheet = 3)
 ```
 
 
@@ -202,22 +198,13 @@ combined_2levels <- bind_rows(locations_to_merge, providers_to_merge)
 ```
 
 
-## 4. Drop overlapping provider level data
-
-  # drop the overlapping provider data
-combined <- combined_2levels
-  group_by(provider_name) %>% 
-  mutate(overlap = ifelse(
-    n() > 1 & level == "provider" & report_type == "Provider", "drop", "keep"
-  )) %>%
-  ungroup()
-
+## Note: the drop of the overlapping provider level data is conducted in the data analysis file
 
 
 
 
 ```{r}
-write_csv(combined_2levels, "D:/Archive/Socialcare UK/data/spinout_2017.csv")
+write_rds(combined_2levels, here("data", "spinout_2017.rds"))
 ```
 
 
