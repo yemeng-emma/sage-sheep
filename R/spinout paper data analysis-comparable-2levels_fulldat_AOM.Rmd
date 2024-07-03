@@ -2,19 +2,19 @@
 title: "Spin-out Data Analysis (full data with new grouping) 2 levels 2017 data"
 subtitle: "updates to the AOM version"
 author: "Meng Ye"
-date: "7/2/2024"
+date: "7/3/2024"
 output:
   word_document: default
   pdf_document: default
   html_document: default
 ---
 
-## Notes for edits on 7/2/2024
+## Notes for edits on 7/3/2024
 
 1. Add the model with health/social care categorization rather than the eight service types
 2. add the cross-tab of rating by form and health/social care
 3. add random effects model with 8 service types, random effects model with health/social care won't run
-
+4. ***add back*** the dropped provider sheet provider level data
 
 ## Notes for editting 1/4/2024
 1. I only kept the model we chose to use for ARNOVA 2023
@@ -99,13 +99,13 @@ merged_cleaned <- merged %>%
                               "Independent consulting doctors", "Prison Healthcare")) %>% 
   
   # drop overlapping provider data 
-  # (correcting the issues with counting twice when both provider and service location are available)
-  group_by(provider_name) %>% 
-  mutate(overlap = ifelse(
-    n() > 1 & level == "provider" & report_type == "Provider", "drop", "keep"
-  )) %>%
-  ungroup()  %>% 
-  filter(overlap != "drop") %>% 
+  # commented out this section because decided to keep provider and coreservice ratings in the provider sheet to stay consistant with the location sheet data
+#  group_by(provider_name) %>% 
+#  mutate(overlap = ifelse(
+#    n() > 1 & level == "provider" & report_type == "Provider", "drop", "keep"
+#  )) %>%
+#  ungroup()  %>% 
+#  filter(overlap != "drop") %>% 
   # 11784 rolws of data down to 11310 rows
   
   # converting the ordinal variable to numerical 
