@@ -4,9 +4,9 @@ subtitle: "updates to the AOM version"
 author: "Meng Ye"
 date: "7/2/2024"
 output:
-  html_document: default
-  pdf_document: default
   word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ## Notes for edits on 7/2/2024
@@ -190,7 +190,7 @@ model_order_responsive <- clm(rating ~ form_spinout + service_type + region + ye
                 link = "logit")
 ```
 
-
+### Compiling all results in odds ratio (exponentiated)
 
 ```{r}
 ordinal_models_exp <-
@@ -204,7 +204,7 @@ ordinal_models_exp <-
       "responsive" = model_order_responsive
     ),
     coef_omit = "region",
-    exponentiate = F,
+    exponentiate = T,
     statistic = "({p.value}) {stars}")
 ordinal_models_exp
 ```
@@ -253,6 +253,7 @@ model_order_responsive_multi <-
 ```
 
 
+### Compiling all results in odds ratio (exponentiated)
 
 
 ```{r}
@@ -267,7 +268,7 @@ ordinal_models_exp_multi <-
       "responsive" = model_order_responsive_multi
     ),
     coef_omit = "region",
-    exponentiate = F,
+    exponentiate = T,
     statistic = "({p.value}) {stars}")
 ordinal_models_exp_multi
 ```
@@ -277,6 +278,7 @@ ordinal_models_exp_multi
 Since service_type is inclusive of variation/information from `socialcare` and `level`, we drop this variable from the model 
 
 
+### Compiling all results in odds ratio (exponentiated)
 
 
 
@@ -316,7 +318,7 @@ ordinal_models_exp2 <-
       "responsive" = model_order_responsive2
     ),
     coef_omit = "region",
-    exponentiate = F,
+    exponentiate = T,
     statistic = "({p.value}) {stars}")
 ordinal_models_exp2
 ```
