@@ -57,7 +57,8 @@ locations_renamed <- locations %>%
          rating = `Latest Rating`,
  #        inherited = `Inherited Rating (Y/N)`, # no such a column in 2017 data
          provider_name = `Provider Name`,
-         publication_date = `Publication Date`) 
+         publication_date = `Publication Date`,
+         address = `Location Street Address`) 
 ```
 
 
@@ -118,6 +119,7 @@ locations_to_merge <- locations_coded %>%
     std_name,
     provider_name,
     location_name = `Location Name`,
+    address,
     type,
     level,
     service_group = `Service / Population Group`,
@@ -153,7 +155,8 @@ providers_renamed <- providers %>%
          domain = `Key Question`, # named to "Domain" later 
          rating = `Latest Rating`,
          provider_name = `Provider Name`,
-         publication_date = `Publication Date`) 
+         publication_date = `Publication Date`,
+         address = `Provider Street Address`) 
 ```
 
 
@@ -205,6 +208,7 @@ providers_to_merge <- providers_coded %>%
     project_id,
     provider_name,
     location_name,
+    address,
     type,
     level,
     service_group = `Service / Population Group`,

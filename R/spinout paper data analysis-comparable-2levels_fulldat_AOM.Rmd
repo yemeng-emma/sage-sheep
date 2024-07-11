@@ -163,7 +163,8 @@ colnames(merged_cleaned)
 ```{r message=FALSE, warning=FALSE}
 # use the combination of a series of variables to identify unique rating groups and calculate the number of ratings in each rating units
 rating_unit <- merged_cleaned %>% 
-  group_by(provider_name, location_name, type, level, service_group, service_type, report_type, social_care, form_spinout) %>%
+  group_by(provider_name, location_name, type, level, address,
+           service_group, primary_cat, service_type, report_type, social_care, form_spinout, publication_date) %>%
   summarise(count = n()) %>% 
   ungroup()
 ```
@@ -176,8 +177,25 @@ rating_unit %>%
   summarise(group_count = n())
 ```
 
+```{r}
+# derive the distribution of the rating units by form_spinout
+unit_to_add <- rating_unit %>% 
+  group_by(form_spinout) %>% 
+  summarise(rating_unit = n())
+unit_to_add
+```
 
-
+```{r}
+rating_unit_count <- count_by_level %>% 
+  left_join(unit_to_add, by = "form_spinout") %>% 
+  select(form_spinout,
+         count_provider,
+         count_location,
+         count_overall_rating,
+         rating_unit,
+         count_rating)
+rating_unit_count
+```
 
 
 ## 3. descriptive statistics: distribution of key variables - overall
