@@ -60,7 +60,7 @@ merged <- read_rds(here("data", "spinout_2017.rds"))
 ```
 
 
-## Prepare the data for ordinal regression
+## 1. Prepare the data for ordinal regression
 
 ```{r data cleaning}
 #select relevant columns, rename and relabel 
@@ -115,23 +115,72 @@ merged_cleaned <- merged %>%
                                 rating == "Outstanding" ~ 4)) 
 nrow(merged_cleaned)
 ```
+## 2. Check data distribution
+
+### 2.1 Build table showing the counts of the data at different levels
 
 ```{r}
-merged_cleaned %>% 
+count_by_level <- merged_cleaned %>% 
   mutate(overall = ifelse(domain == "Overall", 1, 0)) %>% 
   group_by(form_spinout) %>% 
   summarize(count_provider = n_distinct(provider_name),
             count_location = n_distinct(location_name),
             count_overall_rating = sum(overall),
-            count_rating = n()) %>% 
-  gt()
+            count_rating = n()) 
+
+count_by_level
 ```
 
 **Note** The count of unique location name does not include provider level data lines. 
 
+### 2.2 Check the corresponding relationship between service_type and `social_care` and `level`
+
+```{r}
+datasummary(service_type ~ social_care, data = merged_cleaned, fmt = 0) 
+```
 
 
-## Dverall distribution of key variables - overall
+
+```{r}
+datasummary(social_care ~ level, data = merged_cleaned, fmt = 0) 
+```
+
+
+```{r}
+datasummary(service_type ~ level, data = merged_cleaned, fmt = 0) 
+```
+
+
+
+### 2.3 Check how many rating units don't have complete domains
+
+```{r}
+# show column names
+colnames(merged_cleaned)
+```
+
+
+```{r message=FALSE, warning=FALSE}
+# use the combination of a series of variables to identify unique rating groups and calculate the number of ratings in each rating units
+rating_unit <- merged_cleaned %>% 
+  group_by(provider_name, location_name, type, level, service_group, service_type, report_type, social_care, form_spinout) %>%
+  summarise(count = n()) %>% 
+  ungroup()
+```
+
+
+```{r}
+# derive the distribution of the rating unit
+rating_unit %>% 
+  group_by(factor(count)) %>% 
+  summarise(group_count = n())
+```
+
+
+
+
+
+## 3. descriptive statistics: distribution of key variables - overall
 
 ```{r}
 datasummary(form_spinout + social_care + service_type  + region + Year ~ 1, data = merged_cleaned, fmt = 0)
@@ -163,9 +212,11 @@ datasummary(service_type ~ form_spinout * rating_num * mean, data = merged_overa
 ```
 
 
-## whole models with continous year trend  - fixed effects
+## 4. Regression analysis 
 
-Since service_type is inclusive of variation/information from `socialcare` and `level`, we drop this variable from the model 
+### 4.1 whole models with continous year trend  - fixed effects,  **THE MODEL WE DECIDE TO USE!**
+
+Since service_type is inclusive of variation/information from `social_care` and `level`, we drop the variables from the model 
 
 
 ```{r }
@@ -209,7 +260,7 @@ ordinal_models_exp <-
 ordinal_models_exp
 ```
 
-## whole models with continous year trend  - random effects (multi-level)
+### 4.2 whole models with continous year trend  - random effects (multi-level)
 
 
 ```{r }
@@ -273,14 +324,7 @@ ordinal_models_exp_multi <-
 ordinal_models_exp_multi
 ```
 
-## whole models with continous year trend by social/health care
-
-Since service_type is inclusive of variation/information from `socialcare` and `level`, we drop this variable from the model 
-
-
-### Compiling all results in odds ratio (exponentiated)
-
-
+### 4.3 whole models with continous year trend by social/health care 
 
 ```{r }
 model_order_overall2 <- clm(rating ~ form_spinout + social_care + region + year2,
@@ -304,6 +348,8 @@ model_order_responsive2 <- clm(rating ~ form_spinout + social_care + region + ye
                 link = "logit")
 ```
 
+
+### Compiling all results in odds ratio (exponentiated)
 
 
 ```{r}

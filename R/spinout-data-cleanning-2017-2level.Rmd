@@ -10,6 +10,8 @@ output:
 
 ## Introduction 
 
+- update 7/11/2024, update selected columns to include service groups
+
 The current version include the data cleaning for location level CQC data from December 2017. 
 
 
@@ -109,10 +111,25 @@ table(locations_coded$form, locations_coded$spin_out)
 ```{r}
 ## re-arrange columns 
 
-locations_to_merge <- locations_coded %>% 
+locations_to_merge <- locations_coded %>%
   mutate(project_id = paste0("location", row_number())) |>
-  select(project_id, provider_name, location_name = `Location Name`, type, primary_cat, form, region,
-         domain, rating, publication_date, report_type = `Report Type`, std_name, level, spin_out)
+  select(
+    project_id,
+    std_name,
+    provider_name,
+    location_name = `Location Name`,
+    type,
+    level,
+    service_group = `Service / Population Group`,
+    domain,
+    rating,
+    publication_date,
+    primary_cat,
+    region,
+    report_type = `Report Type`,
+    form,
+    spin_out
+  )
 
 ```
 
@@ -181,11 +198,25 @@ nrow(providers_coded)
 ```{r}
 ## re-arrange columns 
 
-providers_to_merge <- providers_coded %>% 
-  mutate(project_id = paste0("provider", row_number())) %>% 
-  select(project_id, provider_name, location_name, type, primary_cat, form, region,
-         domain, rating, publication_date, report_type = `Report Type`, std_name, level, spin_out)
 
+providers_to_merge <- providers_coded %>%
+  mutate(project_id = paste0("provider", row_number())) %>%
+  select(
+    project_id,
+    provider_name,
+    location_name,
+    type,
+    level,
+    service_group = `Service / Population Group`,
+    domain,
+    rating,
+    publication_date,
+    primary_cat,
+    region,
+    report_type = `Report Type`,
+    form,
+    spin_out
+    )
 ```
 
 
@@ -199,8 +230,6 @@ combined_2levels <- bind_rows(locations_to_merge, providers_to_merge)
 
 
 ## Note: the drop of the overlapping provider level data is conducted in the data analysis file
-
-
 
 
 ```{r}
