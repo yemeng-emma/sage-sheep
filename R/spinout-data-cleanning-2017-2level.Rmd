@@ -1,11 +1,11 @@
 ---
 title: "Spin-out Data Cleanning - 2017 location"
 author: "Meng Ye"
-date: "10/10/2023"
+date: "7/10/2023"
 output:
-  html_document: default
-  pdf_document: default
   word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ## Introduction 
